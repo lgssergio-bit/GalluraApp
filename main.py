@@ -11,7 +11,7 @@ STORAGE_URL = f"{SUPABASE_URL}/storage/v1/object/public/foto_funghi"
 # --- DATI ---
 COMUNI_GALLURA = ["Luras", "Calangianus", "Tempio", "Olbia", "Arzachena", "Santa Teresa", "Palau", "San Teodoro", "Budoni", "Badesi"]
 
-# --- SETUP DATABASE GLOBALE ---
+# --- SETUP DATABASE ---
 supabase = None
 stato_connessione = "In attesa..."
 
@@ -19,16 +19,14 @@ try:
     supabase = create_client(SUPABASE_URL, SUPABASE_KEY)
     stato_connessione = "Connesso ✅"
 except Exception as e:
-    stato_connessione = f"Errore Connessione ❌: {e}"
+    stato_connessione = f"Errore Connessione ❌"
 
 # --- FUNZIONI DATABASE ---
 def db_registra(u, p, c):
     if not supabase: return False, "Database Offline"
     try:
-        # Controllo se esiste
         res = supabase.table("utenti").select("*").eq("username", u).execute()
-        if res.data: return False, "Nome utente già esistente"
-        # Inserisco
+        if res.data: return False, "Utente già esistente"
         supabase.table("utenti").insert({"username": u, "password": p, "comune": c}).execute()
         return True, "Registrato!"
     except Exception as e:
@@ -60,15 +58,11 @@ def main(page: ft.Page):
     page.bgcolor = "#121212"
     page.scroll = "auto"
 
-    # Variabili di stato
     user_state = {"name": None, "comune": None}
-
-    # Elementi UI riutilizzabili
     t_status = ft.Text(stato_connessione, color="yellow", size=12)
 
     def mostra_errore(msg):
-        page.snack_bar = ft.SnackBar(ft.Text(f"ERRORE: {msg}"), bgcolor="red")
-        page.snack_bar.open = True
+        page.show_snack_bar(ft.SnackBar(ft.Text(f"ERRORE: {msg}"), bgcolor="red"))
         page.update()
 
     def vai_a_login():
@@ -79,7 +73,7 @@ def main(page: ft.Page):
 
         def azione_login(e):
             try:
-                t_status.value = "Accesso in corso..."
+                t_status.value = "Accesso..."
                 page.update()
                 user = db_login(u_box.value, p_box.value)
                 if user:
@@ -87,29 +81,30 @@ def main(page: ft.Page):
                     user_state['comune'] = user['comune']
                     vai_a_home()
                 else:
-                    mostra_errore("Dati errati o utente non trovato")
-            except Exception as ex:
-                mostra_errore(str(ex))
+                    mostra_errore("Dati errati")
+            except Exception as ex: mostra_errore(str(ex))
 
-        def azione_vai_registra(e):
-            vai_a_registrazione()
+        def azione_vai_registra(e): vai_a_registrazione()
 
+        # FIX: Ho rimosso 'padding' dalla Column e messo tutto in un Container
         page.add(
-            ft.Column([
-                ft.Container(height=50),
-                ft.Icon("forest", size=80, color="green"),
-                ft.Text("GALLURA MYCELIUM", size=30, weight="bold"),
-                t_status,
-                ft.Container(height=20),
-                u_box, p_box,
-                ft.ElevatedButton("ENTRA", on_click=azione_login, bgcolor="green", color="white", width=200),
-                ft.TextButton("Crea un account (Registrati)", on_click=azione_vai_registra)
-            ], horizontal_alignment="center", alignment="center")
+            ft.Container(
+                padding=20,
+                content=ft.Column([
+                    ft.Container(height=50),
+                    ft.Icon("forest", size=80, color="green"),
+                    ft.Text("GALLURA MYCELIUM", size=30, weight="bold"),
+                    t_status,
+                    ft.Container(height=20),
+                    u_box, p_box,
+                    ft.ElevatedButton("ENTRA", on_click=azione_login, bgcolor="green", color="white", width=200),
+                    ft.TextButton("Registrati", on_click=azione_vai_registra)
+                ], horizontal_alignment="center", alignment="center")
+            )
         )
         page.update()
 
     def vai_a_registrazione():
-        # Qui è dove probabilmente si bloccava prima
         try:
             page.clean()
             
@@ -120,35 +115,36 @@ def main(page: ft.Page):
             def azione_conferma_reg(e):
                 try:
                     if not u_reg.value or not p_reg.value or not c_reg.value:
-                        mostra_errore("Compila tutti i campi")
+                        mostra_errore("Compila tutto")
                         return
                     
                     ok, msg = db_registra(u_reg.value, p_reg.value, c_reg.value)
                     if ok:
-                        page.snack_bar = ft.SnackBar(ft.Text("Registrazione OK! Ora entra."), bgcolor="green")
-                        page.snack_bar.open = True
+                        page.show_snack_bar(ft.SnackBar(ft.Text("Registrato!"), bgcolor="green"))
                         page.update()
                         time.sleep(1)
                         vai_a_login()
                     else:
                         mostra_errore(msg)
-                except Exception as ex:
-                    mostra_errore(f"Crash Reg: {ex}")
+                except Exception as ex: mostra_errore(f"Crash Reg: {ex}")
 
+            # FIX: Anche qui, Container con padding che avvolge la Colonna
             page.add(
-                ft.Column([
-                    ft.Text("REGISTRAZIONE", size=24, weight="bold"),
-                    ft.Container(height=20),
-                    u_reg, p_reg, c_reg,
-                    ft.Container(height=20),
-                    ft.ElevatedButton("REGISTRATI ORA", on_click=azione_conferma_reg, bgcolor="blue", color="white"),
-                    ft.TextButton("Annulla", on_click=lambda e: vai_a_login())
-                ], horizontal_alignment="center", padding=20)
+                ft.Container(
+                    padding=20,
+                    content=ft.Column([
+                        ft.Text("REGISTRAZIONE", size=24, weight="bold"),
+                        ft.Container(height=20),
+                        u_reg, p_reg, c_reg,
+                        ft.Container(height=20),
+                        ft.ElevatedButton("REGISTRATI ORA", on_click=azione_conferma_reg, bgcolor="blue", color="white"),
+                        ft.TextButton("Annulla", on_click=lambda e: vai_a_login())
+                    ], horizontal_alignment="center")
+                )
             )
             page.update()
         except Exception as ex:
-            # Se crasha mentre disegna la pagina, scrive l'errore sullo schermo nero
-            page.add(ft.Text(f"CRASH GRAFICO: {ex}", color="red", size=20))
+            page.add(ft.Text(f"CRASH GRAFICO: {ex}", color="red"))
             page.update()
 
     def vai_a_home():
@@ -165,22 +161,24 @@ def main(page: ft.Page):
                     )
                 )
 
+            # FIX: Container con padding
             page.add(
-                ft.Column([
-                    ft.Text(f"Ciao {user_state['name']}!", size=24),
-                    ft.Text(f"Comune: {user_state['comune']}", color="grey"),
-                    ft.Divider(),
-                    ft.Text("CLASSIFICA", color="yellow"),
-                    lista_classifica,
-                    ft.Container(height=50),
-                    ft.Text("Il resto dell'app arriverà appena il login è stabile.", italic=True)
-                ], padding=20)
+                ft.Container(
+                    padding=20,
+                    content=ft.Column([
+                        ft.Text(f"Ciao {user_state['name']}!", size=24),
+                        ft.Text(f"Comune: {user_state['comune']}", color="grey"),
+                        ft.Divider(),
+                        ft.Text("CLASSIFICA", color="yellow"),
+                        lista_classifica,
+                        ft.Container(height=50),
+                        ft.Text("Benvenuto nella versione Cloud!", italic=True)
+                    ])
+                )
             )
             page.update()
-        except Exception as ex:
-            mostra_errore(f"Crash Home: {ex}")
+        except Exception as ex: mostra_errore(f"Crash Home: {ex}")
 
-    # Avvio
     vai_a_login()
 
 ft.app(target=main)
