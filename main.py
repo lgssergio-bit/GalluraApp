@@ -1,24 +1,54 @@
 import flet as ft
 import time
-import traceback
 from supabase import create_client, Client
 
 # --- CONFIGURAZIONE ---
 SUPABASE_URL = "https://zdyjwoxfqzpiexuoetyq.supabase.co"
-# Chiave Anon Public (quella corretta che inizia con ey...)
+# La tua chiave ANON corretta
 SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InpkeWp3b3hmcXpwaWV4dW9ldHlxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjcxNTMzNDAsImV4cCI6MjA4MjcyOTM0MH0.ed0kcRIQm01BPGhLnyzBCsc3KxP82VUDo-6hytJXsn8"
 STORAGE_URL = f"{SUPABASE_URL}/storage/v1/object/public/foto_funghi"
 
 # --- DATI STATICI ---
 COMUNI_GALLURA = ["Luras", "Calangianus", "Tempio", "Olbia", "Arzachena", "Santa Teresa", "Palau", "San Teodoro", "Budoni", "Badesi"]
 
+# Link diretti HD (più affidabili per Android)
 DB_FUNGHI = {
-    "Porcino Nero": {"lat": "Boletus aereus", "desc": "Il Re della macchia. Cappello bronzo.", "img": "https://upload.wikimedia.org/wikipedia/commons/thumb/b/b0/Boletus_aereus_3.jpg/640px-Boletus_aereus_3.jpg", "ok": True},
-    "Ovolo Reale": {"lat": "Amanita caesarea", "desc": "L'unico che si mangia crudo. Giallo oro.", "img": "https://upload.wikimedia.org/wikipedia/commons/thumb/6/64/Amanita_caesarea_2.jpg/640px-Amanita_caesarea_2.jpg", "ok": True},
-    "Antunna": {"lat": "Pleurotus eryngii", "desc": "Il fungo della carne. Cresce sul cardo.", "img": "https://upload.wikimedia.org/wikipedia/commons/thumb/5/52/Pleurotus_eryngii_Mallorca.jpg/640px-Pleurotus_eryngii_Mallorca.jpg", "ok": True},
-    "Mazza di Tamburo": {"lat": "Macrolepiota procera", "desc": "Impanata è come una cotoletta.", "img": "https://upload.wikimedia.org/wikipedia/commons/thumb/7/7d/Macrolepiota_procera_bg.jpg/640px-Macrolepiota_procera_bg.jpg", "ok": True},
-    "Tignosa Verdognola": {"lat": "Amanita phalloides", "desc": "MORTALE. Non toccare.", "img": "https://upload.wikimedia.org/wikipedia/commons/thumb/9/99/Amanita_phalloides_1.JPG/640px-Amanita_phalloides_1.JPG", "ok": False},
-    "Ovolo Malefico": {"lat": "Amanita muscaria", "desc": "Quello delle fiabe. TOSSICO.", "img": "https://upload.wikimedia.org/wikipedia/commons/thumb/3/32/Amanita_muscaria_3_vliegenzwammen_op_rij.jpg/640px-Amanita_muscaria_3_vliegenzwammen_op_rij.jpg", "ok": False}
+    "Porcino Nero": {
+        "lat": "Boletus aereus", 
+        "desc": "Il Re della macchia. Cappello bronzo scuro.", 
+        "img": "https://upload.wikimedia.org/wikipedia/commons/b/b0/Boletus_aereus_3.jpg", 
+        "ok": True
+    },
+    "Ovolo Reale": {
+        "lat": "Amanita caesarea", 
+        "desc": "L'unico che si mangia crudo. Giallo oro.", 
+        "img": "https://upload.wikimedia.org/wikipedia/commons/6/64/Amanita_caesarea_2.jpg", 
+        "ok": True
+    },
+    "Antunna": {
+        "lat": "Pleurotus eryngii", 
+        "desc": "Il fungo della carne. Cresce sul cardo.", 
+        "img": "https://upload.wikimedia.org/wikipedia/commons/5/52/Pleurotus_eryngii_Mallorca.jpg", 
+        "ok": True
+    },
+    "Mazza di Tamburo": {
+        "lat": "Macrolepiota procera", 
+        "desc": "Impanata è come una cotoletta.", 
+        "img": "https://upload.wikimedia.org/wikipedia/commons/7/7d/Macrolepiota_procera_bg.jpg", 
+        "ok": True
+    },
+    "Tignosa Verdognola": {
+        "lat": "Amanita phalloides", 
+        "desc": "MORTALE. Cappello verdastro, volva bianca.", 
+        "img": "https://upload.wikimedia.org/wikipedia/commons/9/99/Amanita_phalloides_1.JPG", 
+        "ok": False
+    },
+    "Ovolo Malefico": {
+        "lat": "Amanita muscaria", 
+        "desc": "Rosso a puntini bianchi. TOSSICO.", 
+        "img": "https://upload.wikimedia.org/wikipedia/commons/3/32/Amanita_muscaria_3_vliegenzwammen_op_rij.jpg", 
+        "ok": False
+    }
 }
 
 # --- DATABASE MANAGER ---
@@ -78,17 +108,17 @@ class CloudManager:
             return self.client.table("post").select("*").order("created_at", desc=True).execute().data
         except: return []
 
-# --- APP ---
+# --- INTERFACCIA ---
 def main(page: ft.Page):
     page.title = "Gallura Mycelium"
     page.bgcolor = "#121212"
     page.theme_mode = ft.ThemeMode.DARK
+    page.scroll = "auto"
     
-    # Inizializza Cloud
     cloud = CloudManager()
     user = {"name": None, "comune": None}
 
-    # File Picker nascosto
+    # File Picker
     file_picker = ft.FilePicker()
     page.overlay.append(file_picker)
     img_temp = ft.Image(visible=False, height=200)
@@ -131,6 +161,8 @@ def main(page: ft.Page):
         p = ft.TextField(label="Password", password=True, border_color="green")
 
         def az_login(e):
+            page.show_snack_bar(ft.SnackBar(ft.Text("Accesso in corso...")))
+            page.update()
             data = cloud.login(u.value, p.value)
             if data:
                 user['name'] = data['username']
@@ -138,7 +170,7 @@ def main(page: ft.Page):
                 show_home()
                 page.add(nav_bar)
             else:
-                page.show_snack_bar(ft.SnackBar(ft.Text("Login Errato!")))
+                page.show_snack_bar(ft.SnackBar(ft.Text("Login Errato!"), bgcolor="red"))
             page.update()
 
         def az_reg(e): show_register()
@@ -200,7 +232,7 @@ def main(page: ft.Page):
             lv.controls.append(ft.Container(
                 bgcolor="#1e1e1e", padding=10, margin=5, border_radius=10,
                 content=ft.Column([
-                    ft.Image(src=v['img'], height=150, fit=ft.ImageFit.COVER, border_radius=5),
+                    ft.Image(src=v['img'], height=200, fit=ft.ImageFit.COVER, border_radius=5),
                     ft.Text(k, size=20, weight="bold", color=col),
                     ft.Text(v['desc'])
                 ])
@@ -225,7 +257,7 @@ def main(page: ft.Page):
                 show_forum()
                 page.add(nav_bar)
             else:
-                page.show_snack_bar(ft.SnackBar(ft.Text("Errore Upload")))
+                page.show_snack_bar(ft.SnackBar(ft.Text("Errore Upload (Controlla Policy!)"), bgcolor="red"))
             page.update()
 
         page.add(ft.Container(padding=20, content=ft.Column([
@@ -247,7 +279,7 @@ def main(page: ft.Page):
                 bgcolor="#1e1e1e", padding=10, margin=5, border_radius=10,
                 content=ft.Column([
                     ft.Row([ft.Text(p['autore'], weight="bold"), ft.Text(p['comune'], color="grey")], alignment="spaceBetween"),
-                    ft.Image(src=url, height=250, fit=ft.ImageFit.COVER, border_radius=5),
+                    ft.Image(src=url, height=300, fit=ft.ImageFit.COVER, border_radius=5),
                     ft.Text(p['descrizione'])
                 ])
             ))
