@@ -37,9 +37,9 @@ jobs:
       with:
         flutter-version: '3.24.0'
 
-    - name: Build APK
+    - name: Build APK (Auto-Confirm)
       run: |
-        flet build apk . --verbose
+        yes | flet build apk . --verbose
 
     - name: Upload APK
       uses: actions/upload-artifact@v4
