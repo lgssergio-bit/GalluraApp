@@ -9,41 +9,47 @@ STORAGE_URL = f"{SUPABASE_URL}/storage/v1/object/public/foto_funghi"
 
 COMUNI_GALLURA = ["Luras", "Calangianus", "Tempio", "Olbia", "Arzachena", "Santa Teresa", "Palau", "San Teodoro", "Budoni", "Badesi"]
 
-# --- DATABASE FUNGHI (Foto HD e Descrizioni) ---
+# --- DATABASE FUNGHI (Link Stabili e Testati) ---
 DB_FUNGHI = {
     "Porcino Nero": {
-        "lat": "Boletus aereus", "desc": "Il Re della macchia.", 
-        "full": "CAPPELLO: Bronzo scuro, vellutato. \nGAMBO: Robusto, color ocra. \nCARNE: Bianca, soda, immutabile. \nHABITAT: Boschi di latifoglie (Sughere). \nCOMMESTIBILITÀ: Eccellente.",
-        "img": "https://upload.wikimedia.org/wikipedia/commons/b/b0/Boletus_aereus_3.jpg", "ok": True
+        "lat": "Boletus aereus", "ok": True,
+        "desc": "Il Re della macchia.", 
+        "full": "CAPPELLO: Bronzo scuro, vellutato. GAMBO: Ocra, robusto. CARNE: Bianca immutabile. HABITAT: Latifoglie (Sughere).",
+        "img": "https://upload.wikimedia.org/wikipedia/commons/8/8a/Boletus_aereus_fere_niger.jpg" # Link diretto stabile
     },
     "Ovolo Reale": {
-        "lat": "Amanita caesarea", "desc": "Si mangia crudo.", 
-        "full": "CAPPELLO: Arancio vivo. \nLAMELLE: Giallo oro. \nGAMBO: Giallo con anello. \nVOLVA: Bianca a sacco. \nNOTE: Ottimo crudo.",
-        "img": "https://upload.wikimedia.org/wikipedia/commons/6/64/Amanita_caesarea_2.jpg", "ok": True
+        "lat": "Amanita caesarea", "ok": True,
+        "desc": "L'unico che si mangia crudo.", 
+        "full": "CAPPELLO: Arancio vivo. LAMELLE: Giallo oro. GAMBO: Giallo. VOLVA: Bianca ampia. NOTE: Ottimo crudo.",
+        "img": "https://upload.wikimedia.org/wikipedia/commons/2/22/Amanita_caesarea_3.jpg"
     },
     "Antunna": {
-        "lat": "Pleurotus eryngii", "desc": "Cresce sul cardo.", 
-        "full": "CAPPELLO: Bruno-rossastro. \nLAMELLE: Bianco-grigiastre, decorrenti. \nHABITAT: Radici del Cardo. \nCUCINA: Eccellente alla brace.",
-        "img": "https://upload.wikimedia.org/wikipedia/commons/5/52/Pleurotus_eryngii_Mallorca.jpg", "ok": True
+        "lat": "Pleurotus eryngii", "ok": True,
+        "desc": "Cresce sul cardo.", 
+        "full": "CAPPELLO: Bruno. LAMELLE: Decorrenti chiare. HABITAT: Radici di cardo. CUCINA: Ottimo alla brace.",
+        "img": "https://upload.wikimedia.org/wikipedia/commons/0/05/Pleurotus_eryngii_01.jpg"
     },
     "Mazza di Tamburo": {
-        "lat": "Macrolepiota procera", "desc": "Gigante tigrato.", 
-        "full": "CAPPELLO: Grande con scaglie brune. \nGAMBO: Tigrato con anello mobile. \nNOTE: Gambo legnoso da scartare. Cuocere bene.",
-        "img": "https://upload.wikimedia.org/wikipedia/commons/7/7d/Macrolepiota_procera_bg.jpg", "ok": True
+        "lat": "Macrolepiota procera", "ok": True,
+        "desc": "Gigante tigrato.", 
+        "full": "CAPPELLO: Scaglie brune. GAMBO: Tigrato con anello mobile. NOTE: Gambo legnoso da scartare.",
+        "img": "https://upload.wikimedia.org/wikipedia/commons/5/5b/Macrolepiota_procera_bgiu.jpg"
     },
     "Tignosa Verdognola": {
-        "lat": "Amanita phalloides", "desc": "MORTALE.", 
-        "full": "PERICOLOSITÀ: Mortale. \nCAPPELLO: Verde oliva/giallastro/bianco. \nGAMBO: Con anello e VOLVA bianca. \nODORE: Dolciastro.",
-        "img": "https://upload.wikimedia.org/wikipedia/commons/9/99/Amanita_phalloides_1.JPG", "ok": False
+        "lat": "Amanita phalloides", "ok": False,
+        "desc": "MORTALE.", 
+        "full": "CAPPELLO: Verdastro/giallo/bianco. GAMBO: Anello e VOLVA bianca. ODORE: Dolciastro.",
+        "img": "https://upload.wikimedia.org/wikipedia/commons/thumb/9/99/Amanita_phalloides_1.JPG/800px-Amanita_phalloides_1.JPG"
     },
     "Ovolo Malefico": {
-        "lat": "Amanita muscaria", "desc": "Rosso a puntini.", 
-        "full": "CAPPELLO: Rosso con verruche bianche. \nLAMELLE: Bianche (NON gialle). \nEFFETTI: Tossico e allucinogeno.",
-        "img": "https://upload.wikimedia.org/wikipedia/commons/3/32/Amanita_muscaria_3_vliegenzwammen_op_rij.jpg", "ok": False
+        "lat": "Amanita muscaria", "ok": False,
+        "desc": "Rosso a puntini.", 
+        "full": "CAPPELLO: Rosso con verruche bianche. LAMELLE: Bianche (NON gialle). TOSSICO.",
+        "img": "https://upload.wikimedia.org/wikipedia/commons/3/32/Amanita_muscaria_3_vliegenzwammen_op_rij.jpg"
     }
 }
 
-# --- CLOUD MANAGER CON POTERI ADMIN ---
+# --- CLOUD MANAGER (God Mode) ---
 class CloudManager:
     def __init__(self):
         try:
@@ -52,20 +58,23 @@ class CloudManager:
         except: self.attivo = False
 
     def login(self, u, p):
-        if not self.attivo: return None
+        if not self.attivo: return None, "Offline"
         try:
-            # Ora scarichiamo anche la colonna 'is_admin'
             res = self.client.table("utenti").select("*").eq("username", u).eq("password", p).execute()
-            return res.data[0] if res.data else None
-        except: return None
+            if res.data:
+                user_data = res.data[0]
+                if user_data.get('bannato', False):
+                    return None, "SEI STATO BANNATO DALL'ADMIN."
+                return user_data, "Ok"
+            return None, "Dati errati"
+        except Exception as e: return None, str(e)
 
     def registra(self, u, p, c):
         if not self.attivo: return False, "Offline"
         try:
             res = self.client.table("utenti").select("*").eq("username", u).execute()
             if res.data: return False, "Utente esiste già"
-            # Default admin è false
-            self.client.table("utenti").insert({"username": u, "password": p, "comune": c, "is_admin": False}).execute()
+            self.client.table("utenti").insert({"username": u, "password": p, "comune": c, "is_admin": False, "bannato": False}).execute()
             return True, "Registrato!"
         except Exception as e: return False, str(e)
 
@@ -95,21 +104,33 @@ class CloudManager:
             return True
         except: return False
 
-    # --- FUNZIONE DELETE (SOLO ADMIN) ---
+    # --- AZIONI ADMIN ---
     def elimina_post(self, pid):
-        if not self.attivo: return False
-        try:
-            # Grazie al 'CASCADE' in SQL, cancellando il post si cancellano commenti e voti da soli
-            self.client.table("post").delete().eq("id", pid).execute()
-            return True
-        except Exception as e:
-            print(e)
-            return False
+        if not self.attivo: return
+        try: self.client.table("post").delete().eq("id", pid).execute()
+        except: pass
 
+    def elimina_commento(self, cid):
+        if not self.attivo: return
+        try: self.client.table("commenti").delete().eq("id", cid).execute()
+        except: pass
+
+    def banna_utente(self, username_da_bannare):
+        if not self.attivo: return
+        try: self.client.table("utenti").update({"bannato": True}).eq("username", username_da_bannare).execute()
+        except: pass
+
+    def get_post_by_id(self, pid):
+        if not self.attivo: return None
+        try:
+            res = self.client.table("post").select("*").eq("id", pid).execute()
+            return res.data[0] if res.data else None
+        except: return None
+
+    # --- SOCIAL ---
     def leggi_post(self):
         if not self.attivo: return []
-        try:
-            return self.client.table("post").select("*").order("created_at", desc=True).execute().data
+        try: return self.client.table("post").select("*").order("created_at", desc=True).execute().data
         except: return []
 
     def conta_social(self, pid):
@@ -126,10 +147,11 @@ class CloudManager:
         return l, f, c
 
     def invia_voto(self, pid, uid, tipo):
-        if not self.attivo: return
+        if not self.attivo: return False
         try:
             self.client.table("voti").insert({"post_id": pid, "user_id": uid, "tipo": tipo}).execute()
-        except: pass
+            return True
+        except: return False # Già votato
 
     def scrivi_commento(self, pid, autore, testo, autore_post):
         if not self.attivo: return
@@ -137,15 +159,15 @@ class CloudManager:
             self.client.table("commenti").insert({"post_id": pid, "autore": autore, "testo": testo}).execute()
             if autore != autore_post:
                 msg = f"{autore} ha commentato il tuo post!"
-                self.client.table("notifiche").insert({"user_id": autore_post, "testo": msg}).execute()
+                self.client.table("notifiche").insert({"user_id": autore_post, "testo": msg, "post_id": pid}).execute()
         except: pass
 
     def leggi_commenti(self, pid):
         if not self.attivo: return []
-        try:
-            return self.client.table("commenti").select("*").eq("post_id", pid).order("created_at", desc=True).execute().data
+        try: return self.client.table("commenti").select("*").eq("post_id", pid).order("created_at", desc=True).execute().data
         except: return []
 
+    # --- NOTIFICHE ---
     def conta_notifiche_non_lette(self, user):
         if not self.attivo: return 0
         try:
@@ -155,14 +177,12 @@ class CloudManager:
 
     def leggi_notifiche(self, user):
         if not self.attivo: return []
-        try:
-            return self.client.table("notifiche").select("*").eq("user_id", user).order("created_at", desc=True).execute().data
+        try: return self.client.table("notifiche").select("*").eq("user_id", user).order("created_at", desc=True).execute().data
         except: return []
 
-    def segna_lette(self, user):
+    def segna_tutte_lette(self, user):
         if not self.attivo: return
-        try:
-            self.client.table("notifiche").update({"letto": True}).eq("user_id", user).execute()
+        try: self.client.table("notifiche").update({"letto": True}).eq("user_id", user).execute()
         except: pass
 
 # --- APP ---
@@ -173,7 +193,6 @@ def main(page: ft.Page):
     page.scroll = "auto"
     
     cloud = CloudManager()
-    # User state ora include 'is_admin'
     user = {"name": None, "comune": None, "is_admin": False}
 
     file_picker = ft.FilePicker()
@@ -183,32 +202,23 @@ def main(page: ft.Page):
 
     def on_file(e):
         if e.files:
-            path_box[0] = e.files[0].path
-            img_temp.src = e.files[0].path
-            img_temp.visible = True
-            page.update()
+            path_box[0] = e.files[0].path; img_temp.src = e.files[0].path; img_temp.visible = True; page.update()
     file_picker.on_result = on_file
 
     def aggiorna_nav(e=None):
         idx = 0
         if e: idx = e.control.selected_index
-        
-        num_notifiche = cloud.conta_notifiche_non_lette(user['name']) if user['name'] else 0
+        n_not = cloud.conta_notifiche_non_lette(user['name']) if user['name'] else 0
         
         page.navigation_bar = ft.NavigationBar(
-            selected_index=idx,
+            selected_index=idx, bgcolor="#222222", on_change=cambio_tab,
             destinations=[
                 ft.NavigationBarDestination(icon="home", label="Home"),
                 ft.NavigationBarDestination(icon="menu_book", label="Guida"),
                 ft.NavigationBarDestination(icon="add_a_photo", label="Carica"),
                 ft.NavigationBarDestination(icon="forum", label="Forum"),
-                ft.NavigationBarDestination(
-                    icon=ft.Icon(ft.icons.NOTIFICATIONS), 
-                    label=f"Notifiche ({num_notifiche})" if num_notifiche > 0 else "Notifiche",
-                ),
-            ],
-            bgcolor="#222222",
-            on_change=cambio_tab
+                ft.NavigationBarDestination(icon=ft.Icon(ft.icons.NOTIFICATIONS), label=f"Notifiche ({n_not})" if n_not > 0 else "Notifiche"),
+            ]
         )
         page.clean()
         if idx == 0: show_home()
@@ -221,29 +231,17 @@ def main(page: ft.Page):
 
     def cambio_tab(e): aggiorna_nav(e)
 
-    # --- PAGINE ---
+    # --- LOGIN ---
     def show_login():
         page.clean()
-        u = ft.TextField(label="Utente", border_color="green")
-        p = ft.TextField(label="Password", password=True, border_color="green")
+        u = ft.TextField(label="Utente"); p = ft.TextField(label="Password", password=True)
         def az_login(e):
-            page.show_snack_bar(ft.SnackBar(ft.Text("Accesso...")))
-            page.update()
-            data = cloud.login(u.value, p.value)
+            page.show_snack_bar(ft.SnackBar(ft.Text("Accesso..."))); page.update()
+            data, msg = cloud.login(u.value, p.value)
             if data:
-                user['name'] = data['username']
-                user['comune'] = data['comune']
-                # Controlla se è admin (di default False se colonna vuota)
-                user['is_admin'] = data.get('is_admin', False)
-                
-                # Feedback visivo
-                msg = f"Benvenuto Admin {user['name']}!" if user['is_admin'] else f"Benvenuto {user['name']}"
-                col = "red" if user['is_admin'] else "green"
-                page.show_snack_bar(ft.SnackBar(ft.Text(msg), bgcolor=col))
-                
+                user['name'] = data['username']; user['comune'] = data['comune']; user['is_admin'] = data.get('is_admin', False)
                 aggiorna_nav()
-            else: page.show_snack_bar(ft.SnackBar(ft.Text("Errore login"), bgcolor="red")); page.update()
-        
+            else: page.show_snack_bar(ft.SnackBar(ft.Text(f"Errore: {msg}"), bgcolor="red")); page.update()
         page.add(ft.Container(padding=20, content=ft.Column([
             ft.Icon("forest", size=80, color="green"), ft.Text("GALLURA MYCELIUM", size=30, weight="bold"),
             ft.Container(height=20), u, p, ft.ElevatedButton("ENTRA", on_click=az_login, bgcolor="green", color="white"),
@@ -253,57 +251,64 @@ def main(page: ft.Page):
 
     def show_register():
         page.clean()
-        u = ft.TextField(label="Utente"); p = ft.TextField(label="Password", password=True)
-        c = ft.Dropdown(label="Comune", options=[ft.dropdown.Option(x) for x in COMUNI_GALLURA])
+        u = ft.TextField(label="Utente"); p = ft.TextField(label="Password", password=True); c = ft.Dropdown(label="Comune", options=[ft.dropdown.Option(x) for x in COMUNI_GALLURA])
         def az_ok(e):
             if not u.value or not p.value or not c.value: return
             ok, msg = cloud.registra(u.value, p.value, c.value)
             page.show_snack_bar(ft.SnackBar(ft.Text(msg)))
             if ok: time.sleep(1); show_login()
             page.update()
-        page.add(ft.Container(padding=20, content=ft.Column([
-            ft.Text("REGISTRAZIONE", size=24), u, p, c,
-            ft.ElevatedButton("CONFERMA", on_click=az_ok, bgcolor="blue", color="white"),
-            ft.TextButton("Annulla", on_click=lambda _: show_login())
-        ], horizontal_alignment="center")))
+        page.add(ft.Container(padding=20, content=ft.Column([ft.Text("REGISTRAZIONE", size=24), u, p, c, ft.ElevatedButton("CONFERMA", on_click=az_ok, bgcolor="blue", color="white"), ft.TextButton("Annulla", on_click=lambda _: show_login())], horizontal_alignment="center")))
         page.update()
 
+    # --- HOME ---
     def show_home():
         rank = cloud.classifica()
         col_rank = ft.Column()
         for i, (com, pt) in enumerate(rank[:5]):
             color = "yellow" if i == 0 else "white"
-            col_rank.controls.append(ft.Container(bgcolor="#222222", padding=10, border_radius=5,
-                content=ft.Row([ft.Text(f"{i+1}. {com}", color=color), ft.Text(f"{pt}", weight="bold", color=color)])))
-        
-        # Nome Admin in ROSSO
-        col_nome = "red" if user['is_admin'] else "white"
-        titolo_user = f"Ciao {user['name']} 🛡️" if user['is_admin'] else f"Ciao {user['name']}"
+            col_rank.controls.append(ft.Container(bgcolor="#222222", padding=10, border_radius=5, content=ft.Row([ft.Text(f"{i+1}. {com}", color=color), ft.Text(f"{pt}", weight="bold", color=color)])))
+        titolo = f"Ciao {user['name']} 🛡️" if user['is_admin'] else f"Ciao {user['name']}"
+        colore_titolo = "red" if user['is_admin'] else "white"
+        page.add(ft.Container(padding=20, content=ft.Column([ft.Text(titolo, size=24, weight="bold", color=colore_titolo), ft.Divider(), ft.Text("CLASSIFICA", color="yellow"), col_rank])))
 
-        page.add(ft.Container(padding=20, content=ft.Column([
-            ft.Text(titolo_user, size=24, weight="bold", color=col_nome), 
-            ft.Divider(),
-            ft.Text("CLASSIFICA", color="yellow"), col_rank
-        ])))
-
+    # --- NOTIFICHE ---
     def show_notifiche():
         notifiche = cloud.leggi_notifiche(user['name'])
         lv = ft.Column(scroll="auto", expand=True)
         if not notifiche: lv.controls.append(ft.Text("Nessuna notifica."))
+        
         for n in notifiche:
-            colore_bg = "#333333" if not n['letto'] else "#1e1e1e"
-            icona = "mark_email_unread" if not n['letto'] else "check"
-            lv.controls.append(ft.Container(bgcolor=colore_bg, padding=15, border_radius=10, margin=5,
-                content=ft.Row([ft.Icon(icona, color="yellow" if not n['letto'] else "grey"), ft.Text(n['testo'], expand=True, weight="bold" if not n['letto'] else "normal")])))
-        cloud.segna_lette(user['name'])
-        page.add(ft.Container(padding=10, expand=True, content=ft.Column([ft.Text("LE TUE NOTIFICHE", size=24), lv])))
+            bg = "#333333" if not n['letto'] else "#1e1e1e"
+            icon = "mark_email_unread" if not n['letto'] else "check"
+            
+            # Click notifica -> Vai al post
+            def vai_al_post(e, pid=n.get('post_id')):
+                if pid:
+                    post = cloud.get_post_by_id(pid)
+                    if post: show_dettaglio_post(post)
+                    else: page.show_snack_bar(ft.SnackBar(ft.Text("Post eliminato!")))
+                else: page.show_snack_bar(ft.SnackBar(ft.Text("Info non disponibile")))
 
+            lv.controls.append(ft.Container(bgcolor=bg, padding=15, border_radius=10, margin=5, on_click=vai_al_post,
+                content=ft.Row([ft.Icon(icon, color="yellow" if not n['letto'] else "grey"), ft.Text(n['testo'], expand=True, weight="bold" if not n['letto'] else "normal")])))
+        
+        def az_segna_tutte(e):
+            cloud.segna_tutte_lette(user['name'])
+            aggiorna_nav()
+
+        page.add(ft.Container(padding=10, expand=True, content=ft.Column([
+            ft.Row([ft.Text("NOTIFICHE", size=24), ft.IconButton(icon="done_all", tooltip="Segna tutte lette", on_click=az_segna_tutte)], alignment="spaceBetween"),
+            lv
+        ])))
+
+    # --- GUIDA ---
     def show_dettaglio_fungo(nome_fungo):
         page.clean()
         dati = DB_FUNGHI[nome_fungo]
         colore = "green" if dati['ok'] else "red"
         page.add(ft.Container(padding=10, content=ft.Column([
-            ft.Row([ft.IconButton(icon="arrow_back", on_click=lambda _: (aggiorna_nav()))]),
+            ft.Row([ft.IconButton(icon="arrow_back", on_click=lambda _: aggiorna_nav())]),
             ft.Image(src=dati['img'], height=300, fit=ft.ImageFit.COVER, border_radius=10),
             ft.Text(nome_fungo, size=30, weight="bold", color=colore),
             ft.Container(bgcolor=colore, padding=5, border_radius=5, content=ft.Text("COMMESTIBILE" if dati['ok'] else "TOSSICO", color="white")),
@@ -323,35 +328,51 @@ def main(page: ft.Page):
                 ])))
         page.add(ft.Container(padding=10, expand=True, content=lv))
 
+    # --- FORUM & DETTAGLIO POST ---
     def show_dettaglio_post(post):
         page.clean()
         url = f"{STORAGE_URL}/{post['image_path']}"
-        comm_box = ft.TextField(hint_text="Scrivi un commento...", expand=True)
+        comm_box = ft.TextField(hint_text="Scrivi commento...", expand=True)
         lista_commenti = ft.Column()
 
         def ricarica_commenti():
             lista_commenti.controls.clear()
             comms = cloud.leggi_commenti(post['id'])
             for c in comms:
+                # Selettore Ban / Elimina Commento
+                comandi = []
+                if user['is_admin']:
+                    comandi.append(ft.IconButton(icon="delete", icon_color="red", icon_size=16, tooltip="Elimina Commento", on_click=lambda e, x=c['id']: az_del_comm(x)))
+                    if c['autore'] != user['name']: # Non bannare se stesso
+                        comandi.append(ft.IconButton(icon="block", icon_color="red", icon_size=16, tooltip="BANNA UTENTE", on_click=lambda e, x=c['autore']: az_ban(x)))
+
                 lista_commenti.controls.append(ft.Container(bgcolor="#222222", padding=8, border_radius=5, margin=2,
-                    content=ft.Column([ft.Text(c['autore'], weight="bold", size=12, color="green"), ft.Text(c['testo'])])))
+                    content=ft.Row([
+                        ft.Column([ft.Text(c['autore'], weight="bold", size=12, color="green"), ft.Text(c['testo'])]),
+                        ft.Row(comandi)
+                    ], alignment="spaceBetween")
+                ))
             page.update()
 
         def az_invia_comm(e):
             if comm_box.value:
                 cloud.scrivi_commento(post['id'], user['name'], comm_box.value, post['autore'])
-                comm_box.value = ""
-                ricarica_commenti()
+                comm_box.value = ""; ricarica_commenti()
+        
+        def az_del_comm(cid):
+            cloud.elimina_commento(cid); ricarica_commenti()
+            
+        def az_ban(nome_utente):
+            cloud.banna_utente(nome_utente)
+            page.show_snack_bar(ft.SnackBar(ft.Text(f"{nome_utente} è stato BANNATO!"), bgcolor="red")); page.update()
 
         ricarica_commenti()
         page.add(ft.Container(padding=10, content=ft.Column([
-            ft.IconButton(icon="arrow_back", on_click=lambda _: (aggiorna_nav())),
+            ft.IconButton(icon="arrow_back", on_click=lambda _: aggiorna_nav()),
             ft.Image(src=url, fit=ft.ImageFit.FIT_WIDTH, border_radius=10),
             ft.Text(f"Post di {post['autore']}", size=20, weight="bold"),
             ft.Text(post['descrizione'], size=16),
-            ft.Divider(),
-            ft.Text("Commenti:", weight="bold"),
-            lista_commenti,
+            ft.Divider(), ft.Text("Commenti:", weight="bold"), lista_commenti,
             ft.Row([comm_box, ft.IconButton(icon="send", on_click=az_invia_comm)])
         ], scroll="auto")))
         page.update()
@@ -365,35 +386,42 @@ def main(page: ft.Page):
             url = f"{STORAGE_URL}/{p['image_path']}"
             likes, fakes, num_comm = cloud.conta_social(p['id'])
             
-            def az_vota(e, pid=p['id'], tipo="Like"):
-                cloud.invia_voto(pid, user['name'], tipo)
-                aggiorna_nav(e)
+            # Tasti aggiornabili in tempo reale
+            btn_like = ft.ElevatedButton(f"👍 {likes}")
+            btn_fake = ft.ElevatedButton(f"🤥 {fakes}", bgcolor="red", color="white")
+            
+            def az_vota(e, pid=p['id'], tipo="Like", bl=btn_like, bf=btn_fake):
+                ok = cloud.invia_voto(pid, user['name'], tipo)
+                if ok: # Aggiorna SOLO il numero sul tasto (UI Optimistic)
+                    if tipo == "Like": bl.text = f"👍 {int(bl.text.split()[1]) + 1}"
+                    else: bf.text = f"🤥 {int(bf.text.split()[1]) + 1}"
+                    bl.update(); bf.update()
 
             def az_elimina(e, pid=p['id']):
-                cloud.elimina_post(pid)
-                aggiorna_nav(e) # Ricarica pagina
+                cloud.elimina_post(pid); aggiorna_nav(e)
+            
+            def az_ban_post(e, nome_utente):
+                cloud.banna_utente(nome_utente)
+                page.show_snack_bar(ft.SnackBar(ft.Text(f"{nome_utente} Bannato!"), bgcolor="red")); page.update()
 
-            # Controlli visibili solo all'ADMIN
-            btn_admin = None
+            admin_row = ft.Row()
             if user['is_admin']:
-                btn_admin = ft.IconButton(icon="delete", icon_color="red", on_click=lambda e, x=p['id']: az_elimina(e, x))
-
-            card = ft.Container(bgcolor="#1e1e1e", padding=10, margin=5, border_radius=10,
-                content=ft.Column([
-                    ft.Row([
-                        ft.Row([ft.Text(p['autore'], weight="bold"), ft.Text(p['comune'], color="grey")]),
-                        btn_admin if btn_admin else ft.Container() # Tasto DELETE solo per admin
-                    ], alignment="spaceBetween"),
-                    ft.Image(src=url, height=200, fit=ft.ImageFit.COVER, border_radius=5),
-                    ft.Text(p['descrizione']),
-                    ft.Row([
-                        ft.ElevatedButton(f"👍 {likes}", on_click=lambda e, x=p['id']: az_vota(e, x, "Like")),
-                        ft.ElevatedButton(f"🤥 {fakes}", on_click=lambda e, x=p['id']: az_vota(e, x, "Fake"), bgcolor="red", color="white"),
-                    ], alignment="center"),
-                    ft.Container(height=5),
-                    ft.OutlinedButton(f"💬 {num_comm} - INGRANDISCI", icon="fullscreen", width=400, on_click=lambda e, x=p: show_dettaglio_post(x))
+                admin_row = ft.Row([
+                    ft.IconButton(icon="delete", icon_color="red", tooltip="Elimina Post", on_click=lambda e, x=p['id']: az_elimina(e, x)),
+                    ft.IconButton(icon="block", icon_color="red", tooltip="BANNA UTENTE", on_click=lambda e, x=p['autore']: az_ban_post(e, x))
                 ])
-            )
+
+            card = ft.Container(bgcolor="#1e1e1e", padding=10, margin=5, border_radius=10, content=ft.Column([
+                ft.Row([ft.Row([ft.Text(p['autore'], weight="bold"), ft.Text(p['comune'], color="grey")]), admin_row], alignment="spaceBetween"),
+                ft.Image(src=url, height=200, fit=ft.ImageFit.COVER, border_radius=5),
+                ft.Text(p['descrizione']),
+                ft.Row([
+                    ft.Container(content=btn_like, on_click=lambda e, x=p['id']: az_vota(e, x, "Like")),
+                    ft.Container(content=btn_fake, on_click=lambda e, x=p['id']: az_vota(e, x, "Fake"))
+                ], alignment="center"),
+                ft.Container(height=5),
+                ft.OutlinedButton(f"💬 {num_comm} - INGRANDISCI", icon="fullscreen", width=400, on_click=lambda e, x=p: show_dettaglio_post(x))
+            ]))
             lv.controls.append(card)
         page.add(ft.Container(padding=10, expand=True, content=lv))
 
@@ -409,11 +437,7 @@ def main(page: ft.Page):
                 img_temp.visible = False; desc.value = ""; path_box[0] = ""; 
                 page.navigation_bar.selected_index = 3; show_forum(); page.add(page.navigation_bar)
             else: page.show_snack_bar(ft.SnackBar(ft.Text("Errore Upload"), bgcolor="red")); page.update()
-        page.add(ft.Container(padding=20, content=ft.Column([
-            ft.Text("NUOVO RITROVAMENTO", size=20),
-            ft.ElevatedButton("FOTO", on_click=lambda _: file_picker.pick_files(), bgcolor="green", color="white"),
-            img_temp, desc, ft.ElevatedButton("PUBBLICA", on_click=az_pub, bgcolor="#333333", color="white")
-        ], horizontal_alignment="center")))
+        page.add(ft.Container(padding=20, content=ft.Column([ft.Text("NUOVO RITROVAMENTO", size=20), ft.ElevatedButton("FOTO", on_click=lambda _: file_picker.pick_files(), bgcolor="green", color="white"), img_temp, desc, ft.ElevatedButton("PUBBLICA", on_click=az_pub, bgcolor="#333333", color="white")], horizontal_alignment="center")))
 
     show_login()
 
