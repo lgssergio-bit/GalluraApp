@@ -7,37 +7,49 @@ SUPABASE_URL = "https://zdyjwoxfqzpiexuoetyq.supabase.co"
 SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InpkeWp3b3hmcXpwaWV4dW9ldHlxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjcxNTMzNDAsImV4cCI6MjA4MjcyOTM0MH0.ed0kcRIQm01BPGhLnyzBCsc3KxP82VUDo-6hytJXsn8"
 STORAGE_URL = f"{SUPABASE_URL}/storage/v1/object/public/foto_funghi"
 
-# --- DATI E LINK IMMAGINI (Link puri per evitare blocchi) ---
+# --- DATI E LINK IMMAGINI OTTIMIZZATI (Thumbnail leggeri) ---
 COMUNI_GALLURA = ["Luras", "Calangianus", "Tempio", "Olbia", "Arzachena", "Santa Teresa", "Palau", "San Teodoro", "Budoni", "Badesi"]
 
 DB_FUNGHI = {
     "Porcino Nero": {
-        "lat": "Boletus aereus", "desc": "Il Re della macchia.", "full": "Cappello bronzo scuro, vellutato. Gambo robusto color ocra. Carne bianca immutabile. Eccellente commestibile.",
-        "img": "https://upload.wikimedia.org/wikipedia/commons/b/b0/Boletus_aereus_3.jpg", "ok": True
+        "lat": "Boletus aereus", "desc": "Il Re della macchia.", 
+        "full": "Cappello bronzo scuro, vellutato. Gambo robusto color ocra. Carne bianca immutabile. Eccellente commestibile.",
+        "img": "https://upload.wikimedia.org/wikipedia/commons/thumb/b/b0/Boletus_aereus_3.jpg/640px-Boletus_aereus_3.jpg", 
+        "ok": True
     },
     "Ovolo Reale": {
-        "lat": "Amanita caesarea", "desc": "L'unico che si mangia crudo.", "full": "Nasce come un uovo bianco. Cappello arancio vivo, lamelle e gambo GIALLO ORO. Ottimo crudo in insalata.",
-        "img": "https://upload.wikimedia.org/wikipedia/commons/6/64/Amanita_caesarea_2.jpg", "ok": True
+        "lat": "Amanita caesarea", "desc": "L'unico che si mangia crudo.", 
+        "full": "Nasce come un uovo bianco. Cappello arancio vivo, lamelle e gambo GIALLO ORO. Ottimo crudo in insalata.",
+        "img": "https://upload.wikimedia.org/wikipedia/commons/thumb/6/64/Amanita_caesarea_2.jpg/640px-Amanita_caesarea_2.jpg", 
+        "ok": True
     },
     "Antunna": {
-        "lat": "Pleurotus eryngii", "desc": "Cresce sul cardo.", "full": "Fungo saprofita che cresce sulle radici del cardo. Cappello bruno, lamelle decorrenti. Carne soda e saporita.",
-        "img": "https://upload.wikimedia.org/wikipedia/commons/5/52/Pleurotus_eryngii_Mallorca.jpg", "ok": True
+        "lat": "Pleurotus eryngii", "desc": "Cresce sul cardo.", 
+        "full": "Fungo saprofita che cresce sulle radici del cardo. Cappello bruno, lamelle decorrenti. Carne soda e saporita.",
+        "img": "https://upload.wikimedia.org/wikipedia/commons/thumb/5/52/Pleurotus_eryngii_Mallorca.jpg/640px-Pleurotus_eryngii_Mallorca.jpg", 
+        "ok": True
     },
     "Mazza di Tamburo": {
-        "lat": "Macrolepiota procera", "desc": "Gigante tigrato.", "full": "Cappello con scaglie marroni, umbone centrale. Anello mobile doppio. Gambo tigrato e legnoso (non si mangia).",
-        "img": "https://upload.wikimedia.org/wikipedia/commons/7/7d/Macrolepiota_procera_bg.jpg", "ok": True
+        "lat": "Macrolepiota procera", "desc": "Gigante tigrato.", 
+        "full": "Cappello con scaglie marroni, umbone centrale. Anello mobile doppio. Gambo tigrato e legnoso (non si mangia).",
+        "img": "https://upload.wikimedia.org/wikipedia/commons/thumb/7/7d/Macrolepiota_procera_bg.jpg/640px-Macrolepiota_procera_bg.jpg", 
+        "ok": True
     },
     "Tignosa Verdognola": {
-        "lat": "Amanita phalloides", "desc": "MORTALE.", "full": "IL PIÙ PERICOLOSO. Cappello verdastro/giallo (variabile). Ha sempre anello e VOLVA bianca. Odore dolciastro.",
-        "img": "https://upload.wikimedia.org/wikipedia/commons/9/99/Amanita_phalloides_1.JPG", "ok": False
+        "lat": "Amanita phalloides", "desc": "MORTALE.", 
+        "full": "IL PIÙ PERICOLOSO. Cappello verdastro/giallo (variabile). Ha sempre anello e VOLVA bianca. Odore dolciastro.",
+        "img": "https://upload.wikimedia.org/wikipedia/commons/thumb/9/99/Amanita_phalloides_1.JPG/640px-Amanita_phalloides_1.JPG", 
+        "ok": False
     },
     "Ovolo Malefico": {
-        "lat": "Amanita muscaria", "desc": "Rosso a puntini bianchi.", "full": "Inconfondibile rosso con verruche bianche. Lamelle BIANCHE (differenza con l'Ovolo Reale). Tossico e allucinogeno.",
-        "img": "https://upload.wikimedia.org/wikipedia/commons/3/32/Amanita_muscaria_3_vliegenzwammen_op_rij.jpg", "ok": False
+        "lat": "Amanita muscaria", "desc": "Rosso a puntini bianchi.", 
+        "full": "Inconfondibile rosso con verruche bianche. Lamelle BIANCHE (differenza con l'Ovolo Reale). Tossico e allucinogeno.",
+        "img": "https://upload.wikimedia.org/wikipedia/commons/thumb/3/32/Amanita_muscaria_3_vliegenzwammen_op_rij.jpg/640px-Amanita_muscaria_3_vliegenzwammen_op_rij.jpg", 
+        "ok": False
     }
 }
 
-# --- DATABASE MANAGER (Aggiornato con Voti e Commenti) ---
+# --- DATABASE MANAGER ---
 class CloudManager:
     def __init__(self):
         try:
@@ -93,12 +105,11 @@ class CloudManager:
             return self.client.table("post").select("*").order("created_at", desc=True).execute().data
         except: return []
 
-    # --- NUOVE FUNZIONI SOCIAL ---
     def invia_voto(self, pid, uid, tipo):
         if not self.attivo: return
         try:
             self.client.table("voti").insert({"post_id": pid, "user_id": uid, "tipo": tipo}).execute()
-        except: pass # Probabilmente ha già votato
+        except: pass 
 
     def conta_voti(self, pid):
         if not self.attivo: return 0, 0
@@ -167,7 +178,7 @@ def main(page: ft.Page):
         on_change=cambio_tab
     )
 
-    # --- PAGINE LOGIN/REG/HOME (Invariate) ---
+    # --- HOME / LOGIN / REG ---
     def show_login():
         page.clean()
         u = ft.TextField(label="Utente", border_color="green")
@@ -218,7 +229,7 @@ def main(page: ft.Page):
             ft.Text("CLASSIFICA", color="yellow"), col_rank
         ])))
 
-    # --- GUIDA CON DETTAGLIO ---
+    # --- GUIDA CON TASTO "SCHEDA COMPLETA" ---
     def show_dettaglio_fungo(nome_fungo):
         page.clean()
         dati = DB_FUNGHI[nome_fungo]
@@ -227,7 +238,6 @@ def main(page: ft.Page):
             ft.Row([ft.IconButton(icon="arrow_back", on_click=lambda _: (page.clean(), show_guida(), page.add(nav_bar), page.update()))]),
             ft.Image(src=dati['img'], height=300, fit=ft.ImageFit.COVER, border_radius=10),
             ft.Text(nome_fungo, size=30, weight="bold", color=colore),
-            ft.Text(dati['lat'], italic=True, size=18, color="grey"),
             ft.Container(bgcolor=colore, padding=5, border_radius=5, content=ft.Text("COMMESTIBILE" if dati['ok'] else "TOSSICO", color="white")),
             ft.Divider(), ft.Text(dati['full'], size=16),
         ], scroll="auto")))
@@ -237,16 +247,92 @@ def main(page: ft.Page):
         lv = ft.Column(scroll="auto", expand=True)
         for k, v in DB_FUNGHI.items():
             col = "green" if v['ok'] else "red"
-            lv.controls.append(ft.Container(bgcolor="#1e1e1e", padding=10, margin=5, border_radius=10,
-                on_click=lambda e, x=k: show_dettaglio_fungo(x),
+            lv.controls.append(ft.Container(
+                bgcolor="#1e1e1e", padding=10, margin=5, border_radius=10,
                 content=ft.Column([
                     ft.Image(src=v['img'], height=150, fit=ft.ImageFit.COVER, border_radius=5),
                     ft.Text(k, size=20, weight="bold", color=col),
-                    ft.Text(v['desc'])
-                ])))
+                    ft.Text(v['desc']),
+                    # Tasto Esplicito per aprire la scheda
+                    ft.ElevatedButton("SCHEDA COMPLETA", icon="info", bgcolor="#333333", color="white", 
+                                      width=400, on_click=lambda e, x=k: show_dettaglio_fungo(x))
+                ])
+            ))
         page.add(ft.Container(padding=10, expand=True, content=lv))
 
-    # --- UPLOAD ---
+    # --- FORUM CON TASTO "INGRANDISCI" ---
+    def show_dettaglio_post(post):
+        page.clean()
+        url = f"{STORAGE_URL}/{post['image_path']}"
+        comm_box = ft.TextField(hint_text="Scrivi un commento...", expand=True)
+        lista_commenti = ft.Column()
+
+        def ricarica_commenti():
+            lista_commenti.controls.clear()
+            comms = cloud.leggi_commenti(post['id'])
+            for c in comms:
+                lista_commenti.controls.append(ft.Container(
+                    bgcolor="#222222", padding=5, border_radius=5, margin=2,
+                    content=ft.Column([
+                        ft.Text(c['autore'], weight="bold", size=12, color="green"),
+                        ft.Text(c['testo'])
+                    ])
+                ))
+            page.update()
+
+        def az_invia_comm(e):
+            if comm_box.value:
+                cloud.scrivi_commento(post['id'], user['name'], comm_box.value)
+                comm_box.value = ""
+                ricarica_commenti()
+
+        ricarica_commenti()
+        page.add(ft.Container(padding=10, content=ft.Column([
+            ft.IconButton(icon="arrow_back", on_click=lambda _: (page.clean(), show_forum(), page.add(nav_bar), page.update())),
+            ft.Image(src=url, fit=ft.ImageFit.FIT_WIDTH, border_radius=10),
+            ft.Text(f"Post di {post['autore']} a {post['comune']}", size=20, weight="bold"),
+            ft.Text(post['descrizione'], size=16),
+            ft.Divider(),
+            ft.Text("Commenti:", weight="bold"),
+            lista_commenti,
+            ft.Row([comm_box, ft.IconButton(icon="send", on_click=az_invia_comm)])
+        ], scroll="auto")))
+        page.update()
+
+    def show_forum():
+        posts = cloud.leggi_post()
+        lv = ft.Column(scroll="auto", expand=True)
+        if not posts: lv.controls.append(ft.Text("Nessun post."))
+        
+        for p in posts:
+            url = f"{STORAGE_URL}/{p['image_path']}"
+            likes, fakes = cloud.conta_voti(p['id'])
+            
+            def az_vota(e, pid=p['id'], tipo="Like"):
+                cloud.invia_voto(pid, user['name'], tipo)
+                show_forum(); page.add(nav_bar); page.update()
+
+            card = ft.Container(
+                bgcolor="#1e1e1e", padding=10, margin=5, border_radius=10,
+                content=ft.Column([
+                    ft.Row([ft.Text(p['autore'], weight="bold"), ft.Text(p['comune'], color="grey")], alignment="spaceBetween"),
+                    ft.Image(src=url, height=200, fit=ft.ImageFit.COVER, border_radius=5),
+                    ft.Text(p['descrizione']),
+                    
+                    ft.Row([
+                        ft.ElevatedButton(f"👍 {likes}", on_click=lambda e, x=p['id']: az_vota(e, x, "Like")),
+                        ft.ElevatedButton(f"🤥 {fakes}", on_click=lambda e, x=p['id']: az_vota(e, x, "Fake"), bgcolor="red", color="white"),
+                    ], alignment="center"),
+                    
+                    # Tasto Esplicito per ingrandire
+                    ft.Container(height=5),
+                    ft.OutlinedButton("INGRANDISCI E COMMENTA", icon="fullscreen", width=400,
+                                      on_click=lambda e, x=p: show_dettaglio_post(x))
+                ])
+            )
+            lv.controls.append(card)
+        page.add(ft.Container(padding=10, expand=True, content=lv))
+
     def show_upload():
         desc = ft.TextField(label="Descrizione")
         def az_pub(e):
@@ -264,82 +350,6 @@ def main(page: ft.Page):
             ft.ElevatedButton("FOTO", on_click=lambda _: file_picker.pick_files(), bgcolor="green", color="white"),
             img_temp, desc, ft.ElevatedButton("PUBBLICA", on_click=az_pub, bgcolor="#333333", color="white")
         ], horizontal_alignment="center")))
-
-    # --- FORUM SOCIAL COMPLETO ---
-    def show_dettaglio_post(post):
-        page.clean()
-        url = f"{STORAGE_URL}/{post['image_path']}"
-        comm_box = ft.TextField(hint_text="Scrivi un commento...", expand=True)
-        lista_commenti = ft.Column()
-
-        def ricarica_commenti():
-            lista_commenti.controls.clear()
-            comms = cloud.leggi_commenti(post['id'])
-            for c in comms:
-                lista_commenti.controls.append(ft.Container(
-                    bgcolor="#222222", padding=5, border_radius=5,
-                    content=ft.Column([
-                        ft.Text(c['autore'], weight="bold", size=12, color="green"),
-                        ft.Text(c['testo'])
-                    ])
-                ))
-            page.update()
-
-        def az_invia_comm(e):
-            if comm_box.value:
-                cloud.scrivi_commento(post['id'], user['name'], comm_box.value)
-                comm_box.value = ""
-                ricarica_commenti()
-
-        ricarica_commenti() # Carica subito i commenti
-
-        page.add(ft.Container(padding=10, content=ft.Column([
-            ft.IconButton(icon="arrow_back", on_click=lambda _: (page.clean(), show_forum(), page.add(nav_bar), page.update())),
-            ft.Image(src=url, fit=ft.ImageFit.FIT_WIDTH, border_radius=10),
-            ft.Text(f"Post di {post['autore']}", size=20, weight="bold"),
-            ft.Text(post['descrizione'], size=16),
-            ft.Divider(),
-            ft.Text("Commenti:", weight="bold"),
-            lista_commenti,
-            ft.Row([comm_box, ft.IconButton(icon="send", on_click=az_invia_comm)])
-        ], scroll="auto")))
-        page.update()
-
-    def show_forum():
-        posts = cloud.leggi_post()
-        lv = ft.Column(scroll="auto", expand=True)
-        if not posts: lv.controls.append(ft.Text("Nessun post."))
-        
-        for p in posts:
-            url = f"{STORAGE_URL}/{p['image_path']}"
-            likes, fakes = cloud.conta_voti(p['id'])
-
-            # Azioni pulsanti
-            def az_vota(e, pid=p['id'], tipo="Like"):
-                cloud.invia_voto(pid, user['name'], tipo)
-                show_forum(); page.add(nav_bar); page.update() # Ricarica per aggiornare i numeri
-
-            # Card del post
-            card = ft.Container(
-                bgcolor="#1e1e1e", padding=10, margin=5, border_radius=10,
-                content=ft.Column([
-                    ft.Row([ft.Text(p['autore'], weight="bold"), ft.Text(p['comune'], color="grey")], alignment="spaceBetween"),
-                    # Cliccando sull'immagine si apre il dettaglio
-                    ft.Container(
-                        content=ft.Image(src=url, height=250, fit=ft.ImageFit.COVER, border_radius=5),
-                        on_click=lambda e, x=p: show_dettaglio_post(x)
-                    ),
-                    ft.Text(p['descrizione']),
-                    ft.Row([
-                        ft.ElevatedButton(f"👍 {likes}", on_click=lambda e, x=p['id']: az_vota(e, x, "Like"), height=30),
-                        ft.ElevatedButton(f"🤥 {fakes}", on_click=lambda e, x=p['id']: az_vota(e, x, "Fake"), height=30, bgcolor="red", color="white"),
-                        ft.TextButton("💬 Commenta", on_click=lambda e, x=p: show_dettaglio_post(x))
-                    ], alignment="center")
-                ])
-            )
-            lv.controls.append(card)
-        
-        page.add(ft.Container(padding=10, expand=True, content=lv))
 
     show_login()
 
