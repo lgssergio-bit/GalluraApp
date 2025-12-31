@@ -7,44 +7,50 @@ SUPABASE_URL = "https://zdyjwoxfqzpiexuoetyq.supabase.co"
 SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InpkeWp3b3hmcXpwaWV4dW9ldHlxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjcxNTMzNDAsImV4cCI6MjA4MjcyOTM0MH0.ed0kcRIQm01BPGhLnyzBCsc3KxP82VUDo-6hytJXsn8"
 STORAGE_URL = f"{SUPABASE_URL}/storage/v1/object/public/foto_funghi"
 
-# --- DATI E LINK IMMAGINI OTTIMIZZATI (Thumbnail leggeri) ---
 COMUNI_GALLURA = ["Luras", "Calangianus", "Tempio", "Olbia", "Arzachena", "Santa Teresa", "Palau", "San Teodoro", "Budoni", "Badesi"]
 
+# --- DATABASE FUNGHI (DESCRIZIONI COMPLETE & FOTO HD) ---
 DB_FUNGHI = {
     "Porcino Nero": {
-        "lat": "Boletus aereus", "desc": "Il Re della macchia.", 
-        "full": "Cappello bronzo scuro, vellutato. Gambo robusto color ocra. Carne bianca immutabile. Eccellente commestibile.",
-        "img": "https://upload.wikimedia.org/wikipedia/commons/thumb/b/b0/Boletus_aereus_3.jpg/640px-Boletus_aereus_3.jpg", 
+        "lat": "Boletus aereus", 
+        "desc": "Il Re della macchia mediterranea.", 
+        "full": "CAPPELLO: Emisferico poi convesso, color bronzo scuro, quasi nero, vellutato. \nGAMBO: Robusto, panciuto, color ocra o nocciola. \nCARNE: Bianca, soda, immutabile al taglio. Profumo intenso. \nHABITAT: Boschi di latifoglie (Querce, Sughere, Castagni). \nCOMMESTIBILITÀ: Eccellente, il migliore dei porcini.",
+        "img": "https://upload.wikimedia.org/wikipedia/commons/b/b0/Boletus_aereus_3.jpg", 
         "ok": True
     },
     "Ovolo Reale": {
-        "lat": "Amanita caesarea", "desc": "L'unico che si mangia crudo.", 
-        "full": "Nasce come un uovo bianco. Cappello arancio vivo, lamelle e gambo GIALLO ORO. Ottimo crudo in insalata.",
-        "img": "https://upload.wikimedia.org/wikipedia/commons/thumb/6/64/Amanita_caesarea_2.jpg/640px-Amanita_caesarea_2.jpg", 
+        "lat": "Amanita caesarea", 
+        "desc": "L'unico che si mangia crudo.", 
+        "full": "CAPPELLO: Arancio vivo, liscio, privo di verruche. \nLAMELLE: Giallo oro (tratto distintivo fondamentale). \nGAMBO: Giallo con ampio anello membranoso. \nVOLVA: A sacco, bianca, ampia e libera al piede. \nNOTE: Nasce avvolto in un velo bianco (uovo). Ottimo crudo in insalata.",
+        "img": "https://upload.wikimedia.org/wikipedia/commons/6/64/Amanita_caesarea_2.jpg", 
         "ok": True
     },
     "Antunna": {
-        "lat": "Pleurotus eryngii", "desc": "Cresce sul cardo.", 
-        "full": "Fungo saprofita che cresce sulle radici del cardo. Cappello bruno, lamelle decorrenti. Carne soda e saporita.",
-        "img": "https://upload.wikimedia.org/wikipedia/commons/thumb/5/52/Pleurotus_eryngii_Mallorca.jpg/640px-Pleurotus_eryngii_Mallorca.jpg", 
+        "lat": "Pleurotus eryngii", 
+        "desc": "Cresce sul cardo.", 
+        "full": "CAPPELLO: Bruno-rossastro, convesso poi piano. \nLAMELLE: Bianco-grigiastre, decorrenti lungo il gambo. \nGAMBO: Eccentrico, sodo, pieno. \nHABITAT: Campi aperti, cresce saprofita sulle radici del Cardo (Eryngium). \nCUCINA: Carne consistente, eccellente alla brace.",
+        "img": "https://upload.wikimedia.org/wikipedia/commons/5/52/Pleurotus_eryngii_Mallorca.jpg", 
         "ok": True
     },
     "Mazza di Tamburo": {
-        "lat": "Macrolepiota procera", "desc": "Gigante tigrato.", 
-        "full": "Cappello con scaglie marroni, umbone centrale. Anello mobile doppio. Gambo tigrato e legnoso (non si mangia).",
-        "img": "https://upload.wikimedia.org/wikipedia/commons/thumb/7/7d/Macrolepiota_procera_bg.jpg/640px-Macrolepiota_procera_bg.jpg", 
+        "lat": "Macrolepiota procera", 
+        "desc": "Gigante tigrato.", 
+        "full": "CAPPELLO: Grande (fino a 30cm), con umbone centrale e scaglie brune su fondo nocciola. \nGAMBO: Slanciato, tigrato, con anello doppio mobile. \nNOTE: Si consuma solo il cappello (il gambo è legnoso). Va cotta bene. Impanata come una cotoletta è ottima.",
+        "img": "https://upload.wikimedia.org/wikipedia/commons/7/7d/Macrolepiota_procera_bg.jpg", 
         "ok": True
     },
     "Tignosa Verdognola": {
-        "lat": "Amanita phalloides", "desc": "MORTALE.", 
-        "full": "IL PIÙ PERICOLOSO. Cappello verdastro/giallo (variabile). Ha sempre anello e VOLVA bianca. Odore dolciastro.",
-        "img": "https://upload.wikimedia.org/wikipedia/commons/thumb/9/99/Amanita_phalloides_1.JPG/640px-Amanita_phalloides_1.JPG", 
+        "lat": "Amanita phalloides", 
+        "desc": "MORTALE.", 
+        "full": "PERICOLOSITÀ: Mortale anche in piccole dosi. Distrugge il fegato. \nCAPPELLO: Variabile, dal verde oliva al giallastro, talvolta bianco. \nGAMBO: Bianco, con anello a gonnellino. \nVOLVA: A sacco, bianca e membranosa alla base. \nODORE: Dolciastro, di miele o rosa appassita.",
+        "img": "https://upload.wikimedia.org/wikipedia/commons/9/99/Amanita_phalloides_1.JPG", 
         "ok": False
     },
     "Ovolo Malefico": {
-        "lat": "Amanita muscaria", "desc": "Rosso a puntini bianchi.", 
-        "full": "Inconfondibile rosso con verruche bianche. Lamelle BIANCHE (differenza con l'Ovolo Reale). Tossico e allucinogeno.",
-        "img": "https://upload.wikimedia.org/wikipedia/commons/thumb/3/32/Amanita_muscaria_3_vliegenzwammen_op_rij.jpg/640px-Amanita_muscaria_3_vliegenzwammen_op_rij.jpg", 
+        "lat": "Amanita muscaria", 
+        "desc": "Rosso a puntini bianchi.", 
+        "full": "CAPPELLO: Rosso vivo cosparso di verruche bianche (che possono esser lavate via dalla pioggia). \nLAMELLE: Bianche (differenza chiave con l'Ovolo Reale che le ha gialle). \nGAMBO: Bianco con anello e volva dissociata in verruche. \nEFFETTI: Tossico, provoca sindrome panterinica (allucinazioni, disturbi gastrointestinali).",
+        "img": "https://upload.wikimedia.org/wikipedia/commons/3/32/Amanita_muscaria_3_vliegenzwammen_op_rij.jpg", 
         "ok": False
     }
 }
@@ -105,27 +111,39 @@ class CloudManager:
             return self.client.table("post").select("*").order("created_at", desc=True).execute().data
         except: return []
 
+    # --- SOCIAL & NOTIFICHE ---
+    def conta_social(self, pid):
+        # Restituisce (Likes, Fakes, Commenti)
+        l, f, c = 0, 0, 0
+        if not self.attivo: return l, f, c
+        try:
+            # Conta voti
+            res_v = self.client.table("voti").select("tipo").eq("post_id", pid).execute()
+            for r in res_v.data:
+                if r['tipo'] == 'Like': l += 1
+                elif r['tipo'] == 'Fake': f += 1
+            # Conta commenti
+            res_c = self.client.table("commenti").select("id", count="exact").eq("post_id", pid).execute()
+            c = res_c.count
+        except: pass
+        return l, f, c
+
     def invia_voto(self, pid, uid, tipo):
         if not self.attivo: return
         try:
             self.client.table("voti").insert({"post_id": pid, "user_id": uid, "tipo": tipo}).execute()
-        except: pass 
-
-    def conta_voti(self, pid):
-        if not self.attivo: return 0, 0
-        l, f = 0, 0
-        try:
-            res = self.client.table("voti").select("tipo").eq("post_id", pid).execute()
-            for r in res.data:
-                if r['tipo'] == 'Like': l += 1
-                elif r['tipo'] == 'Fake': f += 1
         except: pass
-        return l, f
 
-    def scrivi_commento(self, pid, autore, testo):
+    def scrivi_commento(self, pid, autore, testo, autore_post):
         if not self.attivo: return
         try:
+            # 1. Scrivi commento
             self.client.table("commenti").insert({"post_id": pid, "autore": autore, "testo": testo}).execute()
+            
+            # 2. Invia notifica all'autore del post (se non sono io stesso)
+            if autore != autore_post:
+                msg = f"{autore} ha commentato il tuo post!"
+                self.client.table("notifiche").insert({"user_id": autore_post, "testo": msg}).execute()
         except: pass
 
     def leggi_commenti(self, pid):
@@ -133,6 +151,25 @@ class CloudManager:
         try:
             return self.client.table("commenti").select("*").eq("post_id", pid).order("created_at", desc=True).execute().data
         except: return []
+
+    def conta_notifiche_non_lette(self, user):
+        if not self.attivo: return 0
+        try:
+            res = self.client.table("notifiche").select("id", count="exact").eq("user_id", user).eq("letto", False).execute()
+            return res.count
+        except: return 0
+
+    def leggi_notifiche(self, user):
+        if not self.attivo: return []
+        try:
+            return self.client.table("notifiche").select("*").eq("user_id", user).order("created_at", desc=True).execute().data
+        except: return []
+
+    def segna_lette(self, user):
+        if not self.attivo: return
+        try:
+            self.client.table("notifiche").update({"letto": True}).eq("user_id", user).execute()
+        except: pass
 
 # --- APP ---
 def main(page: ft.Page):
@@ -157,28 +194,52 @@ def main(page: ft.Page):
             page.update()
     file_picker.on_result = on_file
 
-    def cambio_tab(e):
-        i = e.control.selected_index
+    # --- BARRA DI NAVIGAZIONE CON PALLINO ROSSO ---
+    def aggiorna_nav(e=None):
+        idx = 0
+        if e: idx = e.control.selected_index
+        
+        # Conta notifiche
+        num_notifiche = cloud.conta_notifiche_non_lette(user['name']) if user['name'] else 0
+        pallino = ft.Badge(text=str(num_notifiche), color="white", bgcolor="red") if num_notifiche > 0 else None
+
+        # Ricostruiamo la Navbar per aggiornare il badge
+        page.navigation_bar = ft.NavigationBar(
+            selected_index=idx,
+            destinations=[
+                ft.NavigationBarDestination(icon="home", label="Home"),
+                ft.NavigationBarDestination(icon="menu_book", label="Guida"),
+                ft.NavigationBarDestination(icon="add_a_photo", label="Carica"),
+                ft.NavigationBarDestination(icon="forum", label="Forum"),
+                ft.NavigationBarDestination(
+                    icon=ft.Icon(ft.icons.NOTIFICATIONS), 
+                    label="Notifiche",
+                ),
+            ],
+            bgcolor="#222222",
+            on_change=cambio_tab
+        )
+        
+        # Trucco per mettere il badge sull'icona notifiche (index 4)
+        if pallino:
+             # Flet non supporta badge diretto su NavDest in modo semplice, 
+             # ma il cambio pagina mostrerà il numero nella tab "Notifiche"
+             page.navigation_bar.destinations[4].label = f"Notifiche ({num_notifiche})"
+             # In future versioni useremo Badge wrapper, per ora testo è più sicuro su tutti i telefoni
+
         page.clean()
-        if i == 0: show_home()
-        elif i == 1: show_guida()
-        elif i == 2: show_upload()
-        elif i == 3: show_forum()
-        page.add(nav_bar)
+        if idx == 0: show_home()
+        elif idx == 1: show_guida()
+        elif idx == 2: show_upload()
+        elif idx == 3: show_forum()
+        elif idx == 4: show_notifiche()
+        page.add(page.navigation_bar)
         page.update()
 
-    nav_bar = ft.NavigationBar(
-        destinations=[
-            ft.NavigationBarDestination(icon="home", label="Home"),
-            ft.NavigationBarDestination(icon="menu_book", label="Guida"),
-            ft.NavigationBarDestination(icon="add_a_photo", label="Carica"),
-            ft.NavigationBarDestination(icon="forum", label="Forum"),
-        ],
-        bgcolor="#222222",
-        on_change=cambio_tab
-    )
+    def cambio_tab(e):
+        aggiorna_nav(e)
 
-    # --- HOME / LOGIN / REG ---
+    # --- PAGINE ---
     def show_login():
         page.clean()
         u = ft.TextField(label="Utente", border_color="green")
@@ -190,9 +251,9 @@ def main(page: ft.Page):
             if data:
                 user['name'] = data['username']
                 user['comune'] = data['comune']
-                show_home(); page.add(nav_bar)
-            else: page.show_snack_bar(ft.SnackBar(ft.Text("Errore login"), bgcolor="red"))
-            page.update()
+                aggiorna_nav() # Va alla Home e aggiorna notifiche
+            else: page.show_snack_bar(ft.SnackBar(ft.Text("Errore login"), bgcolor="red")); page.update()
+        
         page.add(ft.Container(padding=20, content=ft.Column([
             ft.Icon("forest", size=80, color="green"), ft.Text("GALLURA MYCELIUM", size=30, weight="bold"),
             ft.Container(height=20), u, p, ft.ElevatedButton("ENTRA", on_click=az_login, bgcolor="green", color="white"),
@@ -229,17 +290,40 @@ def main(page: ft.Page):
             ft.Text("CLASSIFICA", color="yellow"), col_rank
         ])))
 
-    # --- GUIDA CON TASTO "SCHEDA COMPLETA" ---
+    def show_notifiche():
+        notifiche = cloud.leggi_notifiche(user['name'])
+        lv = ft.Column(scroll="auto", expand=True)
+        if not notifiche: lv.controls.append(ft.Text("Nessuna notifica."))
+        
+        for n in notifiche:
+            colore_bg = "#333333" if not n['letto'] else "#1e1e1e"
+            icona = "mark_email_unread" if not n['letto'] else "check"
+            lv.controls.append(ft.Container(
+                bgcolor=colore_bg, padding=15, border_radius=10, margin=5,
+                content=ft.Row([
+                    ft.Icon(icona, color="yellow" if not n['letto'] else "grey"),
+                    ft.Text(n['testo'], expand=True, weight="bold" if not n['letto'] else "normal"),
+                ])
+            ))
+        
+        # Segna come lette
+        cloud.segna_lette(user['name'])
+        
+        page.add(ft.Container(padding=10, expand=True, content=ft.Column([
+            ft.Text("LE TUE NOTIFICHE", size=24), lv
+        ])))
+
     def show_dettaglio_fungo(nome_fungo):
         page.clean()
         dati = DB_FUNGHI[nome_fungo]
         colore = "green" if dati['ok'] else "red"
         page.add(ft.Container(padding=10, content=ft.Column([
-            ft.Row([ft.IconButton(icon="arrow_back", on_click=lambda _: (page.clean(), show_guida(), page.add(nav_bar), page.update()))]),
+            ft.Row([ft.IconButton(icon="arrow_back", on_click=lambda _: (aggiorna_nav()))]), # Torna alla nav corretta
             ft.Image(src=dati['img'], height=300, fit=ft.ImageFit.COVER, border_radius=10),
             ft.Text(nome_fungo, size=30, weight="bold", color=colore),
             ft.Container(bgcolor=colore, padding=5, border_radius=5, content=ft.Text("COMMESTIBILE" if dati['ok'] else "TOSSICO", color="white")),
-            ft.Divider(), ft.Text(dati['full'], size=16),
+            ft.Divider(), 
+            ft.Text(dati['full'], size=16), # TESTO LUNGO E COMPLETO
         ], scroll="auto")))
         page.update()
 
@@ -253,14 +337,12 @@ def main(page: ft.Page):
                     ft.Image(src=v['img'], height=150, fit=ft.ImageFit.COVER, border_radius=5),
                     ft.Text(k, size=20, weight="bold", color=col),
                     ft.Text(v['desc']),
-                    # Tasto Esplicito per aprire la scheda
                     ft.ElevatedButton("SCHEDA COMPLETA", icon="info", bgcolor="#333333", color="white", 
                                       width=400, on_click=lambda e, x=k: show_dettaglio_fungo(x))
                 ])
             ))
         page.add(ft.Container(padding=10, expand=True, content=lv))
 
-    # --- FORUM CON TASTO "INGRANDISCI" ---
     def show_dettaglio_post(post):
         page.clean()
         url = f"{STORAGE_URL}/{post['image_path']}"
@@ -272,7 +354,7 @@ def main(page: ft.Page):
             comms = cloud.leggi_commenti(post['id'])
             for c in comms:
                 lista_commenti.controls.append(ft.Container(
-                    bgcolor="#222222", padding=5, border_radius=5, margin=2,
+                    bgcolor="#222222", padding=8, border_radius=5, margin=2,
                     content=ft.Column([
                         ft.Text(c['autore'], weight="bold", size=12, color="green"),
                         ft.Text(c['testo'])
@@ -282,15 +364,15 @@ def main(page: ft.Page):
 
         def az_invia_comm(e):
             if comm_box.value:
-                cloud.scrivi_commento(post['id'], user['name'], comm_box.value)
+                cloud.scrivi_commento(post['id'], user['name'], comm_box.value, post['autore'])
                 comm_box.value = ""
                 ricarica_commenti()
 
         ricarica_commenti()
         page.add(ft.Container(padding=10, content=ft.Column([
-            ft.IconButton(icon="arrow_back", on_click=lambda _: (page.clean(), show_forum(), page.add(nav_bar), page.update())),
+            ft.IconButton(icon="arrow_back", on_click=lambda _: (aggiorna_nav())), # Back ricarica la nav
             ft.Image(src=url, fit=ft.ImageFit.FIT_WIDTH, border_radius=10),
-            ft.Text(f"Post di {post['autore']} a {post['comune']}", size=20, weight="bold"),
+            ft.Text(f"Post di {post['autore']}", size=20, weight="bold"),
             ft.Text(post['descrizione'], size=16),
             ft.Divider(),
             ft.Text("Commenti:", weight="bold"),
@@ -306,11 +388,11 @@ def main(page: ft.Page):
         
         for p in posts:
             url = f"{STORAGE_URL}/{p['image_path']}"
-            likes, fakes = cloud.conta_voti(p['id'])
+            likes, fakes, num_comm = cloud.conta_social(p['id'])
             
             def az_vota(e, pid=p['id'], tipo="Like"):
                 cloud.invia_voto(pid, user['name'], tipo)
-                show_forum(); page.add(nav_bar); page.update()
+                aggiorna_nav(e) # Ricarica pagina e nav
 
             card = ft.Container(
                 bgcolor="#1e1e1e", padding=10, margin=5, border_radius=10,
@@ -324,9 +406,9 @@ def main(page: ft.Page):
                         ft.ElevatedButton(f"🤥 {fakes}", on_click=lambda e, x=p['id']: az_vota(e, x, "Fake"), bgcolor="red", color="white"),
                     ], alignment="center"),
                     
-                    # Tasto Esplicito per ingrandire
                     ft.Container(height=5),
-                    ft.OutlinedButton("INGRANDISCI E COMMENTA", icon="fullscreen", width=400,
+                    # Tasto Commenti con CONTEGGIO
+                    ft.OutlinedButton(f"💬 {num_comm} - INGRANDISCI", icon="fullscreen", width=400,
                                       on_click=lambda e, x=p: show_dettaglio_post(x))
                 ])
             )
@@ -342,7 +424,10 @@ def main(page: ft.Page):
             if cloud.upload_foto(path_box[0], nome_file):
                 cloud.nuovo_post(user['name'], user['comune'], desc.value, nome_file)
                 page.show_snack_bar(ft.SnackBar(ft.Text("Pubblicato!"), bgcolor="green"))
-                img_temp.visible = False; desc.value = ""; path_box[0] = ""; show_forum(); page.add(nav_bar)
+                img_temp.visible = False; desc.value = ""; path_box[0] = ""; 
+                # Forza refresh su Forum (index 3)
+                page.navigation_bar.selected_index = 3
+                show_forum(); page.add(page.navigation_bar)
             else: page.show_snack_bar(ft.SnackBar(ft.Text("Errore Upload"), bgcolor="red"))
             page.update()
         page.add(ft.Container(padding=20, content=ft.Column([
