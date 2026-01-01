@@ -1,8 +1,9 @@
-name: Build APK
+name: Build Android APK
 
 on:
   push:
-    branches: [ "main" ]
+    branches:
+      - main
   workflow_dispatch:
 
 jobs:
@@ -18,10 +19,12 @@ jobs:
       with:
         python-version: '3.11'
 
-    - name: Install dependencies
+    - name: Install Dependencies (FORCE UPDATE)
       run: |
         python -m pip install --upgrade pip
-        pip install -r requirements.txt
+        # Forziamo l'installazione specifica ignorando la cache
+        pip install --force-reinstall -r requirements.txt
+        pip install --force-reinstall flet>=0.25.2
 
     - name: Setup Java
       uses: actions/setup-java@v4
@@ -32,17 +35,13 @@ jobs:
     - name: Setup Android SDK
       uses: android-actions/setup-android@v3
 
-    - name: Setup Flutter
-      uses: subosito/flutter-action@v2
-      with:
-        flutter-version: '3.24.0'
-
-    - name: Build APK (Auto-Confirm)
+    - name: Build APK with Flet
       run: |
-        yes | flet build apk . --verbose
+        # Pulizia preventiva
+        flet build apk --verbose
 
     - name: Upload APK
       uses: actions/upload-artifact@v4
       with:
-        name: Gallura-App
+        name: app-release
         path: build/apk/app-release.apk
