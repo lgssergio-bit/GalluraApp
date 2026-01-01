@@ -2,6 +2,7 @@ import flet as ft
 import flet.map as map
 import time
 import json
+import math
 from supabase import create_client, Client
 
 # --- CONFIGURAZIONE ---
@@ -86,16 +87,16 @@ class CloudManager:
         try: return self.client.table("markers").select("*").eq("user_id", uid).execute().data
         except: return []
 
-    def salva_percorso(self, uid, nome, coordinate):
+    def salva_percorso(self, uid, nome, coordinate, durata):
         if not self.attivo: return
         try:
             coord_json = json.dumps(coordinate)
-            self.client.table("percorsi").insert({"user_id": uid, "nome": nome, "coordinate_json": coord_json}).execute()
-        except: pass
+            self.client.table("percorsi").insert({"user_id": uid, "nome": nome, "coordinate_json": coord_json, "durata": durata}).execute()
+        except Exception as e: print(e)
 
     def leggi_percorsi(self, uid):
         if not self.attivo: return []
-        try: return self.client.table("percorsi").select("*").eq("user_id", uid).execute().data
+        try: return self.client.table("percorsi").select("*").eq("user_id", uid).order("created_at", desc=True).execute().data
         except: return []
 
     # --- SOCIAL ---
@@ -167,7 +168,7 @@ def main(page: ft.Page):
     page.scroll = "auto"
     page.keep_screen_on = True 
     
-    # Audio Muto per Background
+    # Audio Muto
     audio_silenzioso = ft.Audio(src="https://github.com/anars/blank-audio/raw/master/10-minutes-of-silence.mp3", autoplay=False, volume=0, release_mode="loop")
     page.overlay.append(audio_silenzioso)
 
@@ -176,7 +177,12 @@ def main(page: ft.Page):
     
     geolocator = ft.Geolocator()
     page.overlay.append(geolocator)
-    map_state = {"recording": False, "path": [], "pos": [40.936, 9.160]}
+    map_state = {
+        "recording": False, 
+        "path": [], 
+        "pos": [40.936, 9.160], 
+        "start_time": 0
+    }
 
     file_picker = ft.FilePicker()
     page.overlay.append(file_picker)
@@ -204,7 +210,7 @@ def main(page: ft.Page):
         page.clean()
         if idx==0: show_home()
         elif idx==1: show_guida()
-        elif idx==2: show_mappa()
+        elif idx==2: show_mappa_container()
         elif idx==3: show_upload()
         elif idx==4: show_forum()
         elif idx==5: show_notifiche()
@@ -212,14 +218,31 @@ def main(page: ft.Page):
 
     def cambio_tab(e): aggiorna_nav(e)
 
-    # --- MAPPA + DASHBOARD ---
-    def show_mappa():
+    # --- CONTAINER MAPPA (TRACKER + ARCHIVIO) ---
+    def show_mappa_container():
+        sub_page = ft.Column(expand=True)
+
+        def switch_mode(e):
+            mode = e.control.data
+            sub_page.controls.clear()
+            if mode == "tracker": show_tracker(sub_page)
+            else: show_archivio(sub_page)
+            page.update()
+
+        header = ft.Row([
+            ft.ElevatedButton("🔴 REGISTRA", data="tracker", on_click=switch_mode, bgcolor="#333333", color="white", expand=True),
+            ft.ElevatedButton("📂 ARCHIVIO", data="archivio", on_click=switch_mode, bgcolor="#333333", color="white", expand=True)
+        ])
+
+        show_tracker(sub_page) # Default
+        page.add(ft.Column([header, ft.Container(content=sub_page, expand=True)], expand=True))
+
+    def show_tracker(container):
         map_widget = map.Map(
             expand=True,
             configuration=map.MapConfiguration(
                 initial_center=map.MapLatitudeLongitude(map_state["pos"][0], map_state["pos"][1]),
                 initial_zoom=15,
-                interaction_configuration=map.MapInteractionConfiguration(flags=map.MapInteractiveFlag.ALL),
             ),
             layers=[
                 map.TileLayer(url_template="https://tile.openstreetmap.org/{z}/{x}/{y}.png"),
@@ -228,17 +251,28 @@ def main(page: ft.Page):
             ],
         )
 
+        txt_stat = ft.Text("STANDBY", color="grey", weight="bold")
+        
+        # Dashboard Layer
+        dashboard_layer = ft.Container(
+            visible=map_state["recording"],
+            bgcolor="#DD000000", expand=True,
+            content=ft.Column([
+                ft.Text("MODALITÀ CAMMINATA", size=20, weight="bold", color="white"),
+                ft.Container(height=20),
+                ft.ElevatedButton("🍄 FUNGO", bgcolor="green", color="white", width=250, height=80, on_click=lambda _: quick_add("Fungo")),
+                ft.Container(height=10),
+                ft.ElevatedButton("🚗 AUTO", bgcolor="blue", color="white", width=250, height=80, on_click=lambda _: quick_add("Auto")),
+                ft.Container(height=10),
+                ft.ElevatedButton("📍 PUNTO", bgcolor="orange", color="white", width=250, height=80, on_click=lambda _: quick_add("Punto Generico")),
+                ft.Container(height=40),
+                ft.ElevatedButton("STOP REGISTRAZIONE", bgcolor="red", color="white", on_click=lambda _: toggle_rec(None))
+            ], alignment="center", horizontal_alignment="center")
+        )
+
         def ridisegna():
             map_widget.layers[1].polylines = [map.Polyline(coordinates=[map.MapLatitudeLongitude(x, y) for x,y in map_state["path"]], color="red", stroke_width=4)]
-            for p in cloud.leggi_percorsi(user['name']):
-                try: 
-                    coords = json.loads(p['coordinate_json'])
-                    map_widget.layers[1].polylines.append(map.Polyline(coordinates=[map.MapLatitudeLongitude(x,y) for x,y in coords], color="blue", stroke_width=2))
-                except: pass
-            mkrs = [map.Marker(content=ft.Icon(ft.icons.MY_LOCATION, color="red", size=30), coordinates=map.MapLatitudeLongitude(map_state["pos"][0], map_state["pos"][1]))]
-            for sm in cloud.leggi_markers(user['name']):
-                mkrs.append(map.Marker(content=ft.Icon(ft.icons.LOCATION_ON, color="green", size=40, tooltip=sm['descrizione']), coordinates=map.MapLatitudeLongitude(sm['lat'], sm['lon'])))
-            map_widget.layers[2].markers = mkrs
+            map_widget.layers[2].markers = [map.Marker(content=ft.Icon(ft.icons.MY_LOCATION, color="red", size=30), coordinates=map.MapLatitudeLongitude(map_state["pos"][0], map_state["pos"][1]))]
             page.update()
 
         def on_gps(e):
@@ -248,75 +282,78 @@ def main(page: ft.Page):
                 ridisegna()
         geolocator.on_position_change = on_gps
 
-        txt_stat = ft.Text("STANDBY", color="grey", weight="bold")
-        
-        # Dashboard Layer (Visibile solo durante REC)
-        dashboard_layer = ft.Container(
-            visible=False,
-            bgcolor="#DD000000", # Semitrasparente nero
-            expand=True,
-            content=ft.Column([
-                ft.Text("MODALITÀ CAMMINATA", size=20, weight="bold", color="white"),
-                ft.Text("Tocca un pulsante per salvare la posizione", color="grey"),
-                ft.Container(height=20),
-                
-                # PULSANTI GIGANTI
-                ft.ElevatedButton("🍄 FUNGO", bgcolor="green", color="white", width=250, height=80, 
-                                  on_click=lambda _: quick_add("Fungo")),
-                ft.Container(height=10),
-                ft.ElevatedButton("🚗 AUTO", bgcolor="blue", color="white", width=250, height=80, 
-                                  on_click=lambda _: quick_add("Auto")),
-                ft.Container(height=10),
-                ft.ElevatedButton("📍 PUNTO", bgcolor="orange", color="white", width=250, height=80, 
-                                  on_click=lambda _: quick_add("Punto Generico")),
-                
-                ft.Container(height=40),
-                ft.ElevatedButton("STOP REGISTRAZIONE", bgcolor="red", color="white", on_click=lambda _: toggle_rec(None))
-            ], alignment="center", horizontal_alignment="center")
-        )
-
         def quick_add(desc):
-            curr = map_state["pos"]
-            cloud.salva_marker(user['name'], curr[0], curr[1], desc)
+            cloud.salva_marker(user['name'], map_state["pos"][0], map_state["pos"][1], desc)
             page.show_snack_bar(ft.SnackBar(ft.Text(f"{desc} SALVATO!")))
-            ridisegna()
-            page.update()
-
+            
         def toggle_rec(e):
             if not map_state["recording"]:
-                # START
-                map_state["recording"] = True; map_state["path"] = []
+                map_state["recording"] = True; map_state["path"] = []; map_state["start_time"] = time.time()
                 txt_stat.value = "🔴 REC"; txt_stat.color = "red"
-                geolocator.request_permission()
-                audio_silenzioso.play()
-                # Mostra Dashboard Gigante
+                geolocator.request_permission(); audio_silenzioso.play()
                 dashboard_layer.visible = True
             else:
-                # STOP
                 map_state["recording"] = False
-                txt_stat.value = "Salvataggio..."; txt_stat.color = "yellow"; 
-                dashboard_layer.visible = False
-                page.update()
-                
+                dashboard_layer.visible = False; page.update()
                 audio_silenzioso.pause()
+                
+                durata_sec = int(time.time() - map_state["start_time"])
+                hh = durata_sec // 3600
+                mm = (durata_sec % 3600) // 60
+                durata_fmt = f"{hh}h {mm}m"
+
                 if len(map_state["path"])>2:
-                    cloud.salva_percorso(user['name'], f"Giro {time.strftime('%H:%M')}", map_state["path"])
-                    page.show_snack_bar(ft.SnackBar(ft.Text("Percorso Salvato!")))
+                    nome = f"Giro del {time.strftime('%d/%m %H:%M')}"
+                    cloud.salva_percorso(user['name'], nome, map_state["path"], durata_fmt)
+                    page.show_snack_bar(ft.SnackBar(ft.Text(f"Salvata: {durata_fmt}")))
                 txt_stat.value = "STANDBY"; txt_stat.color = "grey"
             page.update()
 
         ridisegna()
-
-        page.add(ft.Stack([
+        container.controls.append(ft.Stack([
             map_widget,
-            ft.Container(
-                bgcolor="#CC000000", padding=10, border_radius=10, bottom=20, left=10, right=10,
-                content=ft.Row([txt_stat, ft.Switch(label="REGISTRA", active_color="red", on_change=toggle_rec)], alignment="spaceBetween")
-            ),
-            dashboard_layer # Livello sopra la mappa
+            ft.Container(bgcolor="#CC000000", padding=10, border_radius=10, bottom=20, left=10, right=10, content=ft.Row([txt_stat, ft.Switch(label="REGISTRA", value=map_state["recording"], active_color="red", on_change=toggle_rec)], alignment="spaceBetween")),
+            dashboard_layer
         ], expand=True))
 
-    # --- LOGIN, HOME, ECC (Invariati) ---
+    def show_archivio(container):
+        polylines = []
+        markers = []
+        all_paths = cloud.leggi_percorsi(user['name'])
+        
+        for p in all_paths:
+            try:
+                coords = json.loads(p['coordinate_json'])
+                polylines.append(map.Polyline(coordinates=[map.MapLatitudeLongitude(x,y) for x,y in coords], color="blue", stroke_width=3))
+            except: pass
+            
+        for m in cloud.leggi_markers(user['name']):
+            markers.append(map.Marker(content=ft.Icon(ft.icons.LOCATION_ON, color="green", tooltip=m['descrizione']), coordinates=map.MapLatitudeLongitude(m['lat'], m['lon'])))
+
+        map_global = map.Map(
+            expand=True,
+            configuration=map.MapConfiguration(initial_center=map.MapLatitudeLongitude(map_state["pos"][0], map_state["pos"][1]), initial_zoom=12),
+            layers=[
+                map.TileLayer(url_template="https://tile.openstreetmap.org/{z}/{x}/{y}.png"),
+                map.PolylineLayer(polylines=polylines),
+                map.MarkerLayer(markers=markers),
+            ],
+        )
+
+        lv_camminate = ft.ListView(expand=True, spacing=10, padding=10)
+        if not all_paths: lv_camminate.controls.append(ft.Text("Nessuna camminata registrata."))
+        else:
+            for p in all_paths:
+                durata = p.get('durata', 'N/D')
+                lv_camminate.controls.append(ft.Container(bgcolor="#1e1e1e", padding=15, border_radius=10, content=ft.Row([ft.Icon(ft.icons.DIRECTIONS_WALK, color="yellow"), ft.Column([ft.Text(p['nome'], weight="bold", size=16), ft.Text(f"Durata: {durata}", color="grey")], expand=True)])))
+
+        container.controls.append(ft.Column([
+            ft.Container(content=map_global, height=300, border=ft.border.all(1, "grey")),
+            ft.Container(padding=10, content=ft.Text("DIARIO DI BORDO", size=20, weight="bold")),
+            lv_camminate
+        ], expand=True))
+
+    # --- LOGIN ---
     def show_login():
         page.clean()
         u = ft.TextField(label="Utente"); p = ft.TextField(label="Password", password=True)
@@ -339,6 +376,7 @@ def main(page: ft.Page):
         page.add(ft.Container(padding=20, content=ft.Column([ft.Text("REGISTRAZIONE"), u, p, c, ft.ElevatedButton("CONFERMA", on_click=az), ft.TextButton("Annulla", on_click=lambda _: show_login())], horizontal_alignment="center")))
         page.update()
 
+    # --- PAGINE STANDARD ---
     def show_home():
         rank = cloud.classifica(); col_r = ft.Column()
         for i, (c, pt) in enumerate(rank[:5]): col_r.controls.append(ft.Container(bgcolor="#222222", padding=10, border_radius=5, content=ft.Row([ft.Text(f"{i+1}. {c}", color="yellow" if i==0 else "white"), ft.Text(str(pt), weight="bold")])))
@@ -362,8 +400,10 @@ def main(page: ft.Page):
             bl = ft.ElevatedButton(f"👍 {l}"); bf = ft.ElevatedButton(f"🤥 {f}", bgcolor="red", color="white")
             def v(e, pid=p['id'], t="Like", b1=bl, b2=bf): 
                 if cloud.invia_voto(pid, user['name'], t): b1.text=f"👍 {int(b1.text.split()[1])+1}" if t=="Like" else b1.text; b2.text=f"🤥 {int(b2.text.split()[1])+1}" if t=="Fake" else b2.text; page.update()
+            
             cmds = ft.Row()
             if user['is_admin']: cmds = ft.Row([ft.IconButton(icon="delete", icon_color="red", on_click=lambda e, x=p['id']: (cloud.elimina_post(x), aggiorna_nav(e))), ft.IconButton(icon="block", icon_color="red", on_click=lambda e, x=p['autore']: (cloud.banna_utente(x), page.update()))])
+            
             lv.controls.append(ft.Container(bgcolor="#1e1e1e", padding=10, margin=5, border_radius=10, content=ft.Column([ft.Row([ft.Text(p['autore'], weight="bold"), cmds], alignment="spaceBetween"), ft.Image(src=f"{STORAGE_URL}/{p['image_path']}", height=200, fit=ft.ImageFit.COVER), ft.Text(p['descrizione']), ft.Row([ft.Container(content=bl, on_click=lambda e: v(e)), ft.Container(content=bf, on_click=lambda e: v(e, t="Fake"))], alignment="center"), ft.OutlinedButton(f"💬 {c} - INGRANDISCI", on_click=lambda e, x=p: show_det_post(x))])))
         page.add(ft.Container(padding=10, expand=True, content=lv))
 
